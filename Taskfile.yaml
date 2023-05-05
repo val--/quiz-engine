@@ -1,0 +1,46 @@
+version: '3'
+
+vars:
+  GREETING: Welcome to Quiz Engine!
+  DOCKER_COMPOSE: docker compose
+  APPLICATION_ENTRYPOINT: http://localhost:3000
+
+tasks:
+
+  default:
+    cmds:
+      - task: help
+
+  help:
+    desc: Display this help
+    cmds:
+      - echo "{{.GREETING}}"
+      - task --list
+
+  docker-build:
+    desc: "Builds the Docker images"
+    cmds:
+      - "{{.DOCKER_COMPOSE}} build --pull --no-cache"
+
+  docker-up:
+    desc: "Start the docker hub in detached mode (no logs)"
+    cmds:
+      - "{{.DOCKER_COMPOSE}} up --detach"
+      - "echo Application running on {{.APPLICATION_ENTRYPOINT}}"
+
+  docker-start:
+    desc: "Build and start the containers"
+    cmds:
+      - task: docker-build
+      - task: docker-up
+
+  docker-down:
+    desc: "Stop the docker hub"
+    cmds:
+      - "{{.DOCKER_COMPOSE}} down --remove-orphans"
+
+  docker-logs:
+    desc: "Show live logs"
+    cmds:
+      - "{{.DOCKER_COMPOSE}} logs --tail=0 --follow"
+
